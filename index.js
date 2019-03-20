@@ -6,3 +6,5 @@ require('./services/errorHandling');
 
 // Inicializar conexión a Base de Datos
 require('./db/connection');
+
+require('./scraper/index');
