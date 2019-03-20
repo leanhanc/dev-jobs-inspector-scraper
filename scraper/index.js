@@ -1,8 +1,7 @@
-const Jobs = require('../controllers/JobsController')();
+const adverts = require('../controllers/AdvertsController')();
 
-// Registrar Schema de Mongoose
 /* 
-Jobs.save({
+Adverts.save({
   description:
     'Nos orientamos a profesionales con amplia experiencia en puestos de Arquitecto de Aplicaciones.\nValoramos conocimientos en SOA, amplia experiencia en desarrollo de aplicaciones Java.\nIncorporaremos a importante empresa en zona Microcentro.\nOfrecemos puesto efectivo en nuestro cliente.\nFlexibilidad horaria, prepaga primer nivel, cobertura Gym, estudios universitarios, inglés, días adicionales por vacaciones, entre otros.',
   location: 'Capital Federal',
@@ -13,6 +12,6 @@ Jobs.save({
   publisher: 'Progres S.A.'
 }); */
 
-Jobs.find().then(res => console.log(res));
+adverts.find().then(res => console.log(res));
 
-module.exports = Jobs;
+module.exports = adverts;

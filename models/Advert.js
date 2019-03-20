@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const jobSchema = new mongoose.Schema({
+const advertSchema = new mongoose.Schema({
   site: {
     type: String,
     required: 'No se proveyó nombre del sitio web que publicó originalmente el aviso'
@@ -38,4 +38,4 @@ const jobSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Jobs', jobSchema);
+module.exports = mongoose.model('Advert', advertSchema);

@@ -2,7 +2,7 @@ const logger = require('../services/logger');
 const mongoose = require('mongoose');
 
 // * Registrar modelos
-require('../models/Job');
+require('../models/Advert');
 
 mongoose.connect(process.env.DATABASE_URL, {
   useCreateIndex: true,
