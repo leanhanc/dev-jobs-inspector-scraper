@@ -1,0 +1,31 @@
+{
+  "name": "dev-job-inspector-scraper",
+  "version": "1.0.0",
+  "description": "Scrap software developer jobs in Argentina",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dev",
+    "developer",
+    "jobs",
+    "Argentina"
+  ],
+  "author": "Leandro Hanc",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.15.3",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "nodemon": "^1.18.10",
+    "prettier": "^1.16.4"
+  },
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "mongoose": "^5.4.19",
+    "puppeteer": "^1.13.0",
+    "winston": "^3.2.1"
+  }
+}
