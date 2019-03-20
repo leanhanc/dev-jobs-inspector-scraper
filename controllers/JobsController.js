@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const logger = require('../../services/logger');
+const logger = require('../services/logger');
 const Jobs = mongoose.model('Jobs');
 
 // * CREATE NEW JOB
