@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const logger = require('../services/logger');
-const adverts = mongoose.model('Adverts');
+const adverts = mongoose.model('Advert');
 
 module.exports = () => ({
   findAll: async () => await adverts.find().catch(e => logger.error(e)),
