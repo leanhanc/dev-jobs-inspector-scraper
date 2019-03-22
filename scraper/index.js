@@ -11,7 +11,3 @@ const adverts = require('../controllers/AdvertsController')();
   publisher: 'Progres S.A.'
 });
  */
-
-adverts.findAll().then(res => console.log(res));
-
-module.exports = adverts;

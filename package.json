@@ -16,6 +16,10 @@
   ],
   "author": "Leandro Hanc",
   "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leo10099/dev-job-inspector-scraper.git"
+  },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
     "eslint": "^5.15.3",
@@ -27,6 +31,7 @@
   "dependencies": {
     "dotenv": "^7.0.0",
     "mongoose": "^5.4.19",
+    "node-cron": "^2.0.3",
     "puppeteer": "^1.13.0",
     "winston": "^3.2.1"
   }
