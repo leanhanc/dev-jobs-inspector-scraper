@@ -2,40 +2,47 @@ const LAUNCH_OPTIONS = {
   args: ['--no-sandbox', '--disable-setuid-sandbox'],
   defaultViewport: { width: 1024, height: 780 },
   headless: process.env.NODE_ENV === 'production' ? true : false,
+  headles: true,
   ignoreHTTPSErrors: true,
   timeout: 50000
 };
 
 const SEARCH_FOR = [
+  /*
   'Android',
+  'AWS',
   'Angular',
   'Backend',
-  'Desarrollador C',
-  'Junior Developer',
-  'Cordova',
+  'Cobol',
   'DevOps',
-  'Ionic',
+  'Dev Ops',
   'iOS',
   'Frontend',
-  'Full-Stack',
+  'Full Stack',
   'Java',
   'Javascript',
   'Laravel',
-  'MySQL',
-  'MS SQL Server',
-  'Desarrollador .Net',
+  'Mongo DB',
+  'Microsoft .NET',
   'Node',
   'Php',
-  'PostgreSQL',
+  'PL/SQL',
   'Python',
   'React',
+  */
   'React Native',
-  'Senior Developer',
-  'Spring',
-  'Swift',
+  'SQL',
   'Vue JS'
 ];
 
+const BUMERAN_URL = 'https://www.bumeran.com.ar';
+const COMPUTRABAJO_URL = 'https://www.computrabajo.com.ar';
 const ZONAJOBS_URL = 'https://www.zonajobs.com.ar';
 
-module.exports = { LAUNCH_OPTIONS, SEARCH_FOR, ZONAJOBS_URL };
+module.exports = {
+  LAUNCH_OPTIONS,
+  SEARCH_FOR,
+  BUMERAN_URL,
+  COMPUTRABAJO_URL,
+  ZONAJOBS_URL
+};

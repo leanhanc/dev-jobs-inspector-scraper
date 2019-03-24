@@ -47,4 +47,8 @@ const handleDuplicate = function(error, res, next) {
 
 advertSchema.post('save', handleDuplicate);
 
+advertSchema.post('save', function(doc) {
+  logger.info(`Nuevo documento: ${doc.title} (${doc.site})`);
+});
+
 module.exports = mongoose.model('Advert', advertSchema);

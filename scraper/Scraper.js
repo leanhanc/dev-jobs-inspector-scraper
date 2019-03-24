@@ -23,7 +23,7 @@ module.exports = class Scraper {
     await page.setRequestInterception(true);
 
     page.on('request', request => {
-      if (['image', 'stylesheet', 'font'].includes(request.resourceType())) {
+      if (['image', 'font'].includes(request.resourceType())) {
         request.abort();
       } else {
         request.continue();

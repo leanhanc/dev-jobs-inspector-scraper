@@ -2,12 +2,12 @@ const Scraper = require('./Scraper');
 const { ZONAJOBS_URL: baseUrl } = require('../scraper/config/constants');
 
 const filterAdvertsByWord = 'horas';
+const siteName = 'Zonajobs';
 
 module.exports = class Zonajobs extends Scraper {
   constructor(searchFor) {
     super();
     this.baseUrl = baseUrl;
-    this.filterAdvertsByWord = filterAdvertsByWord;
     this.searchFor = searchFor;
   }
 
@@ -36,7 +36,7 @@ module.exports = class Zonajobs extends Scraper {
   }
 
   async getAdvertDetails(advertDetailPage) {
-    return await advertDetailPage.evaluate(() => {
+    return await advertDetailPage.evaluate(siteName => {
       const composeAdvert = {};
 
       composeAdvert.description = [].map
@@ -47,16 +47,16 @@ module.exports = class Zonajobs extends Scraper {
           ? document.querySelector('.spec_def h2 a').innerText.split(',')[0]
           : document.querySelector('.spec_def h2 a').innerText.split(',')[1];
       composeAdvert.publisher = document.querySelector('.aviso_company').innerText;
-      composeAdvert.site = 'Zonajobs';
+      composeAdvert.site = siteName;
       composeAdvert.title = document.querySelector('.aviso_title').innerText;
       composeAdvert.url = window.location.href;
 
       return composeAdvert;
-    });
+    }, siteName);
   }
 
   async iterateOverAdvertsUrl(advertsUrl) {
-    advertsUrl.forEach(async advertUrl => {
+    for (let advertUrl of advertsUrl) {
       const advertDetailPage = await this.browser.newPage();
       await advertDetailPage.goto(advertUrl);
       await advertDetailPage.waitFor(2000);
@@ -66,13 +66,13 @@ module.exports = class Zonajobs extends Scraper {
 
       await advertDetailPage.waitFor(1000);
       await advertDetailPage.close();
-    });
+    }
   }
 
   async iterateOverSearchTerms() {
     for (let term of this.searchFor) {
       await this.page.waitForSelector('#query');
-      await this.page.type('#query', term, { delay: 200 });
+      await this.page.type('#query', term, { delay: 100 });
       await this.page.keyboard.press('Enter');
       await this.page.waitFor(1000);
 
@@ -82,7 +82,7 @@ module.exports = class Zonajobs extends Scraper {
       const advertsUrl = await this.getAdvertsUrl();
       await this.iterateOverAdvertsUrl(advertsUrl);
     }
-    await this.browser.close();
+    this.browser.close();
   }
 
   async scraper() {
