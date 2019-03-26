@@ -66,6 +66,14 @@ module.exports = class ComputrabajoScraper extends Scraper {
 
   async iterateOverSearchTerms() {
     for (let term of this.searchFor) {
+      const searchInput = await this.page.$('#sq');
+
+      if (!searchInput) {
+        await this.page.goBack();
+        await this.page.waitForSelector('#sq');
+        await this.page.evaluate(() => (document.getElementById('sq').value = ''));
+      }
+
       await this.page.waitForSelector('#sq');
       await this.page.type('#sq', term, { delay: 100 });
       await this.page.keyboard.press('Enter');
@@ -78,6 +86,7 @@ module.exports = class ComputrabajoScraper extends Scraper {
     }
     this.browser.close();
   }
+
   async scraper() {
     await super.init(this.baseUrl);
     await this.iterateOverSearchTerms();
