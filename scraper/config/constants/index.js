@@ -8,7 +8,6 @@ const LAUNCH_OPTIONS = {
 };
 
 const SEARCH_FOR = [
-  /*
   'Android',
   'AWS',
   'Angular',
@@ -29,7 +28,6 @@ const SEARCH_FOR = [
   'PL/SQL',
   'Python',
   'React',
-  */
   'React Native',
   'SQL',
   'Vue JS'
