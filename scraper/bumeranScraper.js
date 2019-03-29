@@ -9,6 +9,7 @@ module.exports = class Bumeran extends ZonajobsScraper {
     this.baseUrl = baseUrl;
     this.searchFor = searchFor;
   }
+
   async getAdvertDetails(advertDetailPage) {
     return await advertDetailPage.evaluate(siteName => {
       const composeAdvert = {};
@@ -31,6 +32,6 @@ module.exports = class Bumeran extends ZonajobsScraper {
 
   async scraper() {
     await this.init(this.baseUrl);
-    await this.iterateOverSearchTerms();
+    await this.searchForAdverts();
   }
 };

@@ -1,6 +1,6 @@
-const Scraper = require('./Scraper');
-const { COMPUTRABAJO_URL: baseUrl } = require('../scraper/config/constants');
+const Scraper = require('./baseScraper');
 
+const { COMPUTRABAJO_URL: baseUrl } = require('../scraper/config/constants');
 const filterAdvertsByWord = 'Ayer';
 const siteName = 'Computrabajo';
 
@@ -64,7 +64,7 @@ module.exports = class ComputrabajoScraper extends Scraper {
     return advertsUrl;
   }
 
-  async iterateOverSearchTerms() {
+  async searchForAdverts() {
     for (let term of this.searchFor) {
       const searchInput = await this.page.$('#sq');
 
@@ -89,6 +89,6 @@ module.exports = class ComputrabajoScraper extends Scraper {
 
   async scraper() {
     await super.init(this.baseUrl);
-    await this.iterateOverSearchTerms();
+    await this.searchForAdverts();
   }
 };

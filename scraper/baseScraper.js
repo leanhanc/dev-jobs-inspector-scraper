@@ -7,11 +7,11 @@ module.exports = class Scraper {
   constructor() {}
 
   async init(url) {
-    this.page = await this.launch();
+    this.page = await this.launchBrowser();
     await this.page.goto(url);
   }
 
-  async launch() {
+  async launchBrowser() {
     this.browser = await puppeteer.launch({ ...LAUNCH_OPTIONS });
 
     const page = await this.browser.newPage();

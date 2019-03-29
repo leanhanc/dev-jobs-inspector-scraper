@@ -1,4 +1,5 @@
-const Scraper = require('./Scraper');
+const Scraper = require('./baseScraper');
+
 const { ZONAJOBS_URL: baseUrl } = require('../scraper/config/constants');
 
 const filterAdvertsByWord = 'horas';
@@ -69,7 +70,7 @@ module.exports = class Zonajobs extends Scraper {
     }
   }
 
-  async iterateOverSearchTerms() {
+  async searchForAdverts() {
     for (let term of this.searchFor) {
       await this.page.waitForSelector('#query');
       await this.page.type('#query', term, { delay: 100 });
@@ -87,6 +88,6 @@ module.exports = class Zonajobs extends Scraper {
 
   async scraper() {
     await super.init(this.baseUrl);
-    await this.iterateOverSearchTerms();
+    await this.searchForAdverts();
   }
 };
