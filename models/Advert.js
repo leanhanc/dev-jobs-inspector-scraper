@@ -45,6 +45,28 @@ const handleDuplicate = function(error, res, next) {
   }
 };
 
+// Normalizar acentos en nombres de provincias
+
+const normalize = function(next) {
+  if (this.location === 'Cordoba') {
+    this.location = 'Córdoba';
+  } else if (this.location === 'Santa fe') {
+    this.location = 'Santa fé';
+  } else if (this.location === 'Rio Negro') {
+    this.location = 'Río Negro';
+  } else if (this.location === 'Neuquen') {
+    this.location = 'Neuquén';
+  } else if (this.location === 'Tucuman') {
+    this.location = 'Tucumán';
+  } else if (this.location === 'Entre Rios') {
+    this.location = 'Entre Ríos';
+  }
+
+  next();
+};
+
+advertSchema.pre('save', normalize);
+
 advertSchema.post('save', handleDuplicate);
 
 advertSchema.post('save', function(doc) {
