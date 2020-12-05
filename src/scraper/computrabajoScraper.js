@@ -39,6 +39,7 @@ module.exports = class ComputrabajoScraper extends Scraper {
 
 	async iterateOverAdvertsUrl(advertsUrl) {
 		const advertsToSave = [];
+
 		for (let advertUrl of advertsUrl) {
 			const advertDetailPage = await this.browser.newPage();
 			await advertDetailPage.goto(advertUrl);
@@ -50,8 +51,6 @@ module.exports = class ComputrabajoScraper extends Scraper {
 			await sleepFor(1000);
 			await advertDetailPage.close();
 		}
-
-		console.log(advertsToSave);
 
 		return advertsToSave;
 	}
@@ -94,8 +93,6 @@ module.exports = class ComputrabajoScraper extends Scraper {
 			await sleepFor(2000);
 
 			const advertsUrl = await this.getAdvertsUrl();
-
-			if (!advertsUrl || advertsUrl.length < 1) return;
 
 			const advertsToSave = await this.iterateOverAdvertsUrl(advertsUrl);
 			await super.saveAdverts(advertsToSave, jobsCollection);

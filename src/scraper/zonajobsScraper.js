@@ -1,5 +1,5 @@
 const Scraper = require("./baseScraper");
-
+const { sleepFor } = require("../utils/generic");
 const { ZONAJOBS_URL } = require("../utils/constants");
 
 const filterAdvertsByWord = "horas";
@@ -17,7 +17,7 @@ module.exports = class Zonajobs extends Scraper {
 		await this.page.waitForSelector(buttonSelector);
 		const button = await this.page.$$(buttonSelector);
 		await button[1].click();
-		await this.page.waitFor(1000);
+		await sleepFor(1000);
 	}
 
 	async getAdvertsUrl() {
@@ -40,9 +40,11 @@ module.exports = class Zonajobs extends Scraper {
 		return await advertDetailPage.evaluate(siteName => {
 			const composeAdvert = {};
 
-			composeAdvert.description = [].map
-				.call(document.querySelectorAll(".aviso_description > p"), el => el.innerText)
-				.join();
+			composeAdvert.date = new Date().toString();
+			composeAdvert.description = document
+				.querySelector(".aviso_description")
+				.innerText.replace("Descripción", "")
+				.trim();
 			composeAdvert.location =
 				document.querySelector(".spec_def h2 a").innerText.split(",")[0] === "Capital Federal"
 					? document.querySelector(".spec_def h2 a").innerText.split(",")[0]
@@ -57,37 +59,43 @@ module.exports = class Zonajobs extends Scraper {
 	}
 
 	async iterateOverAdvertsUrl(advertsUrl) {
+		const advertsToSave = [];
+
 		for (let advertUrl of advertsUrl) {
 			const advertDetailPage = await this.browser.newPage();
 			await advertDetailPage.goto(advertUrl);
-			await advertDetailPage.waitFor(2000);
+			await sleepFor(2000);
 
-			const adverts = await this.getAdvertDetails(advertDetailPage);
-			await super.saveAdverts(adverts);
+			const newAdvert = await this.getAdvertDetails(advertDetailPage);
+			advertsToSave.push(newAdvert);
 
-			await advertDetailPage.waitFor(1000);
+			await sleepFor(1000);
 			await advertDetailPage.close();
 		}
+
+		return advertsToSave;
 	}
 
-	async searchForAdverts() {
+	async searchForAdverts(jobsCollection) {
 		for (let term of this.searchFor) {
 			await this.page.waitForSelector("#query");
 			await this.page.type("#query", term, { delay: 100 });
 			await this.page.keyboard.press("Enter");
-			await this.page.waitFor(1000);
+			await sleepFor(1000);
 
 			await this.sortByDate();
 
-			await this.page.waitFor(2000);
+			await sleepFor(2000);
 			const advertsUrl = await this.getAdvertsUrl();
-			await this.iterateOverAdvertsUrl(advertsUrl);
+
+			const advertsToSave = await this.iterateOverAdvertsUrl(advertsUrl);
+			await super.saveAdverts(advertsToSave, jobsCollection);
 		}
 		this.browser.close();
 	}
 
-	async scraper() {
+	async run(jobsCollection) {
 		await super.init(this.baseUrl);
-		await this.searchForAdverts();
+		await this.searchForAdverts(jobsCollection);
 	}
 };

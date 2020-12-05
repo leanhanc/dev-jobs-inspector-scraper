@@ -5,11 +5,12 @@ const { connectDatabase } = require("./db/connection");
 // Scrapers
 const Bumeran = require("./scraper/bumeranScraper");
 const Computrabajo = require("./scraper/computrabajoScraper");
+const Zonajobs = require("./scraper/zonajobsScraper");
 
 const bootstrap = async () => {
 	const { jobs } = await connectDatabase();
 
-	new Computrabajo(SEARCH_FOR).run(jobs);
+	new Zonajobs(SEARCH_FOR).run(jobs);
 };
 
 bootstrap();
