@@ -25,7 +25,7 @@ module.exports = class ComputrabajoScraper extends Scraper {
 				.querySelectorAll("ul.m0 p")[1]
 				.innerText.split(",")[1]
 				.trim();
-			composeAdvert.publisher = document.querySelector("#urlverofertas").innerText.trim();
+			composeAdvert.publisher = document.querySelector("#urlverofertas")?.innerText.trim() || "";
 			composeAdvert.site = siteName;
 			composeAdvert.title = document.querySelector("h1.m0").innerText;
 			composeAdvert.url = window.location.href;

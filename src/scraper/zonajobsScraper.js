@@ -26,7 +26,10 @@ module.exports = class Zonajobs extends Scraper {
 
 			document.querySelectorAll(".aviso").forEach(advert => {
 				if (advert.querySelector(".z-fecha").textContent.includes(filterAdvertsByWord)) {
-					filteredAdverts.push(advert.querySelector("a").href);
+					const url = advert.querySelector("a").href;
+					if (url.includes("bumeran")) return;
+
+					filteredAdverts.push(url);
 				}
 			}, filterAdvertsByWord);
 
@@ -41,14 +44,25 @@ module.exports = class Zonajobs extends Scraper {
 			const composeAdvert = {};
 
 			composeAdvert.date = new Date().toString();
-			composeAdvert.description = document
-				.querySelector(".aviso_description")
-				.innerText.replace("Descripción", "")
-				.trim();
+			if (document.querySelector(".aviso_description")) {
+				composeAdvert.description = document
+					.querySelector(".aviso_description")
+					.innerText.replace("Descripción", "")
+					.trim();
+			} else if (document.querySelector(".FichaAviso__DescripcionAviso-b2a7hd-11")) {
+				composeAdvert.description = document
+					.querySelector(".FichaAviso__DescripcionAviso-b2a7hd-11 p")
+					.innerText.trim();
+			}
 			composeAdvert.location =
 				document.querySelector(".spec_def h2 a").innerText.split(",")[0] === "Capital Federal"
 					? document.querySelector(".spec_def h2 a").innerText.split(",")[0]
 					: document.querySelector(".spec_def h2 a").innerText.split(",")[1];
+			// composeAdvert.location =
+			// 	document.querySelector(".DetalleAviso__InfoLabel-sc-4kfhr6j-1").innerText.split(",")[0] ===
+			// 	"Capital Federal"
+			// 		? document.querySelector(".spec_def h2 a").innerText.split(",")[0]
+			// 		: document.querySelector(".spec_def h2 a").innerText.split(",")[1];
 			composeAdvert.publisher = document.querySelector(".aviso_company").innerText;
 			composeAdvert.site = siteName;
 			composeAdvert.title = document.querySelector(".aviso_title").innerText;
@@ -64,7 +78,7 @@ module.exports = class Zonajobs extends Scraper {
 		for (let advertUrl of advertsUrl) {
 			const advertDetailPage = await this.browser.newPage();
 			await advertDetailPage.goto(advertUrl);
-			await sleepFor(2000);
+			await sleepFor(3000);
 
 			const newAdvert = await this.getAdvertDetails(advertDetailPage);
 			advertsToSave.push(newAdvert);

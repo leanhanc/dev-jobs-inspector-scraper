@@ -22,7 +22,7 @@
 		"url": "https://github.com/leo10099/dev-job-inspector-scraper.git"
 	},
 	"devDependencies": {
-		"eslint": "^7.11.0",
+		"eslint": "^7.5.0",
 		"eslint-config-prettier": "^6.13.0",
 		"nodemon": "^2.0.5",
 		"prettier": "^2.1.2"

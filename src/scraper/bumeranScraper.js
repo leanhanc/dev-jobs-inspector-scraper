@@ -99,9 +99,10 @@ module.exports = class Bumeran extends BaseScraper {
 				".FichaAvisoSubHeader__Company-sc-1poii24-2",
 			).innerText;
 			advert.site = sitename;
-			advert.title = document.querySelector(
-				".FichaAvisoSubHeader__Heading-sc-1poii24-3.dzUULL.Title__H1-sc-2yd2j1-0.dmYIZt",
-			).innerText;
+			advert.title =
+				document.querySelector(
+					".FichaAvisoSubHeader__Heading-sc-1poii24-3.dzUULL.Title__H1-sc-2yd2j1-0.dmYIZt",
+				)?.innerText || "";
 			advert.url = window.location.href;
 
 			return advert;

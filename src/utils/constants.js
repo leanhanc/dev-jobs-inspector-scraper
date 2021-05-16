@@ -1,7 +1,6 @@
 const LAUNCH_OPTIONS = {
 	args: ["--no-sandbox", "--disable-setuid-sandbox"],
 	defaultViewport: { width: 1024, height: 780 },
-	headless: process.env.NODE_ENV === "production" ? true : false,
 	headles: true,
 	ignoreHTTPSErrors: true,
 	timeout: 50000,
