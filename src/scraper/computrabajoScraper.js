@@ -2,7 +2,7 @@ const Scraper = require("./baseScraper");
 
 const { COMPUTRABAJO_URL } = require("../utils/constants");
 const { sleepFor } = require("../utils/generic");
-const filterAdvertsByWord = "Ayer";
+const filterAdvertsByWord = "hora";
 const siteName = "Computrabajo";
 
 module.exports = class ComputrabajoScraper extends Scraper {
@@ -12,28 +12,34 @@ module.exports = class ComputrabajoScraper extends Scraper {
 		this.searchFor = searchFor;
 	}
 
+	async sortByDate(page) {
+		await sleepFor(2000);
+
+		page.evaluate(() => {
+			const { href } = window.location;
+			window.location.href = `${href}?by=publicationtime`;
+		});
+	}
+
 	async getAdvertDetails(advertDetailPage) {
 		return await advertDetailPage.evaluate(siteName => {
-			const composeAdvert = {};
+			const composedAdvert = {};
 
-			composeAdvert.date = new Date().toString();
-			composeAdvert.description = document
-				.querySelector(".p0.m0")
-				.innerText.replace("Descripción", "")
-				.trim();
-			composeAdvert.location = document
-				.querySelectorAll("ul.m0 p")[1]
-				.innerText.split(",")[1]
-				.trim();
-			composeAdvert.publisher = document.querySelector("#urlverofertas").innerText.trim();
-			composeAdvert.site = siteName;
-			composeAdvert.title = document.querySelector("h1.m0").innerText;
-			composeAdvert.url = window.location.href;
+			composedAdvert.date = new Date().toISOString();
+			composedAdvert.description = document.querySelector(".box_detail.fl p.mbB").innerText.trim();
 
-			// Normalizar nombre de localidad
-			if (composeAdvert.location.includes("Buenos Aires")) composeAdvert.location = "Buenos Aires";
+			const [publisherText, locationText] = document
+				.querySelector("main h1 + p")
+				.textContent.split("-");
 
-			return composeAdvert;
+			composedAdvert.title = document.querySelector("main h1").innerText.trim();
+			composedAdvert.location = locationText.trim();
+			composedAdvert.publisher = publisherText.trim();
+
+			composedAdvert.site = siteName;
+			composedAdvert.url = window.location.href;
+
+			return composedAdvert;
 		}, siteName);
 	}
 
@@ -58,14 +64,16 @@ module.exports = class ComputrabajoScraper extends Scraper {
 	async getAdvertsUrl() {
 		const advertsUrl = await this.page.evaluate(filterAdvertsByWord => {
 			const filteredAdverts = [];
+			const adverts = [...document.querySelectorAll("#p_ofertas")];
 
-			document.querySelectorAll(".iO").forEach(advert => {
-				// No hacer scraping de avisos sin Consultora o Empresa
-				if (advert.querySelector(".it-blank").href === window.location.href) {
-					return;
-				}
+			if (!adverts.length) return filteredAdverts;
+
+			document.querySelectorAll("#p_ofertas").forEach(advert => {
 				// Tomar todos los avisos y filtrarlos por fecha
-				if (advert.querySelector(".dO").textContent.includes(filterAdvertsByWord)) {
+				if (
+					advert.querySelector(".fs13.fc_aux") &&
+					advert.querySelector(".fs13.fc_aux").textContent.includes(filterAdvertsByWord)
+				) {
 					filteredAdverts.push(advert.querySelector(".js-o-link").href);
 				}
 			}, filterAdvertsByWord);
@@ -77,19 +85,24 @@ module.exports = class ComputrabajoScraper extends Scraper {
 	}
 
 	async searchForAdverts(jobsCollection) {
-		for (let term of this.searchFor) {
-			const searchInput = await this.page.$("#sq");
+		const searchInputSelector = "#search-prof-cat-input";
 
-			if (!searchInput) {
+		for (let term of this.searchFor) {
+			const searchInput = await this.page.$(searchInputSelector);
+
+			if (!searchInputSelector) {
 				await this.page.goBack();
-				await this.page.waitForSelector("#sq");
-				await this.page.evaluate(() => (document.getElementById("sq").value = ""));
+				await this.page.waitForSelector(searchInput);
+				await this.page.evaluate(() => (document.getElementById(searchInput).value = ""));
 			}
 
-			await this.page.waitForSelector("#sq");
-			await this.page.type("#sq", term, { delay: 100 });
+			await this.page.waitForSelector(searchInputSelector);
+			await this.page.$eval(searchInputSelector, el => (el.value = ""));
+
+			await this.page.type(searchInputSelector, term, { delay: 100 });
 			await this.page.keyboard.press("Enter");
 
+			await this.sortByDate(this.page);
 			await sleepFor(2000);
 
 			const advertsUrl = await this.getAdvertsUrl();

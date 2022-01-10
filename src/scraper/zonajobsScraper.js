@@ -30,7 +30,8 @@ module.exports = class Zonajobs extends Scraper {
 				}
 			}, filterAdvertsByWord);
 
-			return filteredAdverts;
+			// Remove all Bumeran jobs, they are saved in their own scraper job
+			return filteredAdverts.filter(url => !url.includes("bumeran"));
 		}, filterAdvertsByWord);
 
 		return advertsUrl;
@@ -38,23 +39,26 @@ module.exports = class Zonajobs extends Scraper {
 
 	async getAdvertDetails(advertDetailPage) {
 		return await advertDetailPage.evaluate(siteName => {
-			const composeAdvert = {};
+			const composedAdvert = {};
 
-			composeAdvert.date = new Date().toString();
-			composeAdvert.description = document
+			if (!document.querySelector(".aviso_description")) {
+				window.alert("jere");
+				return;
+			}
+
+			composedAdvert.date = new Date().toISOString();
+			composedAdvert.description = document
 				.querySelector(".aviso_description")
 				.innerText.replace("Descripción", "")
 				.trim();
-			composeAdvert.location =
-				document.querySelector(".spec_def h2 a").innerText.split(",")[0] === "Capital Federal"
-					? document.querySelector(".spec_def h2 a").innerText.split(",")[0]
-					: document.querySelector(".spec_def h2 a").innerText.split(",")[1];
-			composeAdvert.publisher = document.querySelector(".aviso_company").innerText;
-			composeAdvert.site = siteName;
-			composeAdvert.title = document.querySelector(".aviso_title").innerText;
-			composeAdvert.url = window.location.href;
 
-			return composeAdvert;
+			composedAdvert.location = document.querySelector("span.ml10.mr10").innerText;
+			composedAdvert.publisher = document.querySelector(".aviso_company").innerText;
+			composedAdvert.site = siteName;
+			composedAdvert.title = document.querySelector(".aviso_title").innerText;
+			composedAdvert.url = window.location.href;
+
+			return composedAdvert;
 		}, siteName);
 	}
 
