@@ -41,18 +41,14 @@ module.exports = class Zonajobs extends Scraper {
 		return await advertDetailPage.evaluate(siteName => {
 			const composedAdvert = {};
 
-			if (!document.querySelector(".aviso_description")) {
-				window.alert("jere");
+			if (!document.querySelector(".detalle-aviso")) {
 				return;
 			}
 
 			composedAdvert.date = new Date().toISOString();
-			composedAdvert.description = document
-				.querySelector(".aviso_description")
-				.innerText.replace("Descripción", "")
-				.trim();
+			composedAdvert.description = document.querySelector(".aviso_description").innerText;
 
-			composedAdvert.location = document.querySelector("span.ml10.mr10").innerText;
+			composedAdvert.location = document.querySelector(".spec_def h2").innerText;
 			composedAdvert.publisher = document.querySelector(".aviso_company").innerText;
 			composedAdvert.site = siteName;
 			composedAdvert.title = document.querySelector(".aviso_title").innerText;
