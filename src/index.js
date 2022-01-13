@@ -18,7 +18,9 @@ const bootstrap = async () => {
 	});
 	const { jobs } = await connectDatabase();
 
-	new Zonajobs(SEARCH_FOR).run(jobs);
+	await new Computrabajo(SEARCH_FOR).run(jobs);
+	await new Zonajobs(SEARCH_FOR).run(jobs);
+	await new Bumeran(SEARCH_FOR).run(jobs);
 };
 
 bootstrap();

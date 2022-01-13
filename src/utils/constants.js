@@ -14,8 +14,6 @@ const SEARCH_FOR = [
 	"AWS",
 	"Backend",
 	"Blockchain",
-	"C/C++",
-	"C#",
 	"Cobol",
 	"CSS",
 	"Dev Ops",

@@ -12,12 +12,13 @@ module.exports = class Zonajobs extends Scraper {
 		this.searchFor = searchFor;
 	}
 
-	async sortByDate() {
-		const buttonSelector = ".btn.switch-btn";
-		await this.page.waitForSelector(buttonSelector);
-		const button = await this.page.$$(buttonSelector);
-		await button[1].click();
-		await sleepFor(1000);
+	async sortByDate(page) {
+		await sleepFor(2000);
+
+		page.evaluate(() => {
+			const { href } = window.location;
+			window.location.href = `${href}?recientes=true`;
+		});
 	}
 
 	async getAdvertsUrl() {
@@ -81,9 +82,9 @@ module.exports = class Zonajobs extends Scraper {
 			await this.page.waitForSelector("#query");
 			await this.page.type("#query", term, { delay: 100 });
 			await this.page.keyboard.press("Enter");
-			await sleepFor(1000);
+			await sleepFor(10000);
 
-			await this.sortByDate();
+			await this.sortByDate(this.page);
 
 			await sleepFor(2000);
 			const advertsUrl = await this.getAdvertsUrl();
