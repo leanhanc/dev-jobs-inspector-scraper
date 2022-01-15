@@ -13,9 +13,9 @@ module.exports = class Bumeran extends BaseScraper {
 	}
 
 	async selectRecents() {
-		await sleepFor(2000);
+		await sleepFor(4000);
 		await clickByText(this.page, "Recientes");
-		await sleepFor(2000);
+		await sleepFor(4000);
 	}
 
 	async getAdvertsUrl() {
