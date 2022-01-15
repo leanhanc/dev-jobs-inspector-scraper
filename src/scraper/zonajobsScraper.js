@@ -12,12 +12,13 @@ module.exports = class Zonajobs extends Scraper {
 		this.searchFor = searchFor;
 	}
 
-	async sortByDate() {
-		const buttonSelector = ".btn.switch-btn";
-		await this.page.waitForSelector(buttonSelector);
-		const button = await this.page.$$(buttonSelector);
-		await button[1].click();
-		await sleepFor(1000);
+	async sortByDate(page) {
+		await sleepFor(2000);
+
+		page.evaluate(() => {
+			const { href } = window.location;
+			window.location.href = `${href}?recientes=true`;
+		});
 	}
 
 	async getAdvertsUrl() {
@@ -33,7 +34,8 @@ module.exports = class Zonajobs extends Scraper {
 				}
 			}, filterAdvertsByWord);
 
-			return filteredAdverts;
+			// Remove all Bumeran jobs, they are saved in their own scraper job
+			return filteredAdverts.filter(url => !url.includes("bumeran"));
 		}, filterAdvertsByWord);
 
 		return advertsUrl;
@@ -41,34 +43,22 @@ module.exports = class Zonajobs extends Scraper {
 
 	async getAdvertDetails(advertDetailPage) {
 		return await advertDetailPage.evaluate(siteName => {
-			const composeAdvert = {};
+			const composedAdvert = {};
 
-			composeAdvert.date = new Date().toString();
-			if (document.querySelector(".aviso_description")) {
-				composeAdvert.description = document
-					.querySelector(".aviso_description")
-					.innerText.replace("Descripción", "")
-					.trim();
-			} else if (document.querySelector(".FichaAviso__DescripcionAviso-b2a7hd-11")) {
-				composeAdvert.description = document
-					.querySelector(".FichaAviso__DescripcionAviso-b2a7hd-11 p")
-					.innerText.trim();
+			if (!document.querySelector(".detalle-aviso")) {
+				return;
 			}
-			composeAdvert.location =
-				document.querySelector(".spec_def h2 a").innerText.split(",")[0] === "Capital Federal"
-					? document.querySelector(".spec_def h2 a").innerText.split(",")[0]
-					: document.querySelector(".spec_def h2 a").innerText.split(",")[1];
-			// composeAdvert.location =
-			// 	document.querySelector(".DetalleAviso__InfoLabel-sc-4kfhr6j-1").innerText.split(",")[0] ===
-			// 	"Capital Federal"
-			// 		? document.querySelector(".spec_def h2 a").innerText.split(",")[0]
-			// 		: document.querySelector(".spec_def h2 a").innerText.split(",")[1];
-			composeAdvert.publisher = document.querySelector(".aviso_company").innerText;
-			composeAdvert.site = siteName;
-			composeAdvert.title = document.querySelector(".aviso_title").innerText;
-			composeAdvert.url = window.location.href;
 
-			return composeAdvert;
+			composedAdvert.date = new Date().toISOString();
+			composedAdvert.description = document.querySelector(".aviso_description").innerText;
+
+			composedAdvert.location = document.querySelector(".spec_def h2").innerText;
+			composedAdvert.publisher = document.querySelector(".aviso_company").innerText;
+			composedAdvert.site = siteName;
+			composedAdvert.title = document.querySelector(".aviso_title").innerText;
+			composedAdvert.url = window.location.href;
+
+			return composedAdvert;
 		}, siteName);
 	}
 
@@ -95,9 +85,9 @@ module.exports = class Zonajobs extends Scraper {
 			await this.page.waitForSelector("#query");
 			await this.page.type("#query", term, { delay: 100 });
 			await this.page.keyboard.press("Enter");
-			await sleepFor(1000);
+			await sleepFor(10000);
 
-			await this.sortByDate();
+			await this.sortByDate(this.page);
 
 			await sleepFor(2000);
 			const advertsUrl = await this.getAdvertsUrl();

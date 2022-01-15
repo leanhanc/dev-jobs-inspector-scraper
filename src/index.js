@@ -1,12 +1,27 @@
+// Env Config
 require("dotenv").config();
-require("./utils/errorHandling");
 
-const cronJobs = require("./jobs/");
+// Database connection
 const { connectDatabase } = require("./db/connection");
 
+// Scraping Schedule
+const startCronJobs = require("./jobs/");
+
+// Utils
+require("./utils/errorHandling");
+
 const bootstrap = async () => {
-	const { jobs: jobsCollection } = await connectDatabase();
-	cronJobs(jobsCollection);
+	// Handle uncaught exceptions/unhandled promise rejections and log them
+	process.on("uncaughtException", e => {
+		console.log(`${e.message}\n${e.stack}`);
+		process.exit(1);
+	});
+	process.on("unhandledRejection", reason => {
+		throw reason;
+	});
+	const { jobs } = await connectDatabase();
+
+	startCronJobs(jobs);
 };
 
 bootstrap();
