@@ -20,8 +20,9 @@ const bootstrap = async () => {
 		throw reason;
 	});
 	const { jobs } = await connectDatabase();
-
 	startCronJobs(jobs);
+
+	console.log("Started Worker!");
 };
 
 bootstrap();
